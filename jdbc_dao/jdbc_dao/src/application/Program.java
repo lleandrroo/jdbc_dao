@@ -1,7 +1,6 @@
 package application;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Date;
 
 import db.DB;
