@@ -28,6 +28,15 @@ public class Seller implements Serializable {
 		this.department = department;
 	}
 
+	public Seller(Object object,
+			String string, 
+			String string2, 
+			String string3, 
+			double d, 
+			int i) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public Integer getId() {
 		return id;
 	}
