@@ -4,18 +4,19 @@ import java.sql.Connection;
 import java.util.Date;
 
 import db.DB;
+import model.dao.DaoFactory;
+import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
 
 public class Program {
 
 	public static void main(String[] args) {
-
-		Connection conexao = DB.getConnection();
-		Department dp = new Department(1, "Books");
-		Seller sell = new Seller(11, "Bob", "bob@email.com", new Date(), 3000.0, dp);
-		System.out.println(sell);
-
+		
+		SellerDao sellerDao = DaoFactory.createSellerDao(); // inversão de dependência
+		System.out.println("*** TEST 1: seller findById ***");
+		Seller seller = sellerDao.findById(9);		
+		System.out.println(seller);
 	}
 
 }
