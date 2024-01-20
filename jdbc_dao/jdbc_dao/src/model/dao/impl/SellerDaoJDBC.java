@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import db.DB;
 import db.DbException;
@@ -80,14 +81,36 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public List<Seller> findAll() {
-		return null;
+		try {
+			PreparedStatement ps = connection
+					.prepareStatement("select seller.*,department.name as dpName" 
+							+ " from seller inner join department"
+							+ " on seller.department_id = department.id" 
+							+ " order by name");
+					ResultSet rs = ps.executeQuery();
+					
+					List<Seller> list = new ArrayList<>();
+					Map<Integer, Department> map = new TreeMap<>();
+					while(rs.next()) {
+						Department dpDTO = map.get(rs.getInt("department_id")); 
+						if(dpDTO == null) {
+							dpDTO =	instantiateDepartment(rs);
+							map.put(rs.getInt("department_id"), dpDTO);
+						}
+						Seller selDTO = instantiateSeller(rs, dpDTO);
+						list.add(selDTO);						
+					}
+					return list;
+		} catch (SQLException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	@Override
 	public List<Seller> findByDepartment(Department department) {
 		try {
-			PreparedStatement ps = connection.prepareStatement(
-					"select seller.*,department.name as dpName" + " from seller inner join department"
+			PreparedStatement ps = connection
+					.prepareStatement("select seller.*,department.name as dpName" + " from seller inner join department"
 							+ " on seller.department_id = department.id" + " where department_id = ? ");
 			ps.setInt(1, department.getId());
 			ResultSet rs = ps.executeQuery();
